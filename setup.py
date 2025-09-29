@@ -1,0 +1,105 @@
+from setuptools import setup, Extension, find_packages
+
+ext_modules = [
+    Extension(
+        "sato_exp.core._core",
+        sources=[
+            "sato_exp/core/src/globals.cpp",
+            "sato_exp/core/src/compute_gso.cpp"
+        ],
+        language="c++",
+        extra_compile_args=[
+            "-O3",
+            "-fopenmp",
+            "-march=native",
+            "-funroll-loops",
+            "-DEIGEN_INITIALIZE_MATRICES_BY_NAN",
+            "-DEIGEN_NO_DEBUG=0"
+        ],
+        extra_link_args=[
+            "-fopenmp",
+            "-lntl",
+            "-DEIGEN_INITIALIZE_MATRICES_BY_NAN",
+            "-DEIGEN_NO_DEBUG=0"
+        ],
+        include_dirs=[
+            "sato_exp/core/include"
+        ]
+    ),
+    Extension(
+        "sato_exp.reduction._reduction",
+        sources=[
+            "sato_exp/core/src/globals.cpp",
+            "sato_exp/core/src/compute_gso.cpp",
+            "sato_exp/core/src/sl.cpp",
+            "sato_exp/reduction/src/update_swap_gso.cpp",
+            "sato_exp/reduction/src/LLL.cpp",
+            "sato_exp/svp/src/globals.cpp",
+            "sato_exp/svp/src/coeff_pruning.cpp",
+            "sato_exp/svp/src/enum_sv.cpp",
+            "sato_exp/reduction/src/bkz.cpp"
+        ],
+        language="c++",
+        extra_compile_args=[
+            "-O3",
+            "-fopenmp",
+            "-march=native",
+            "-funroll-loops",
+            "-DEIGEN_INITIALIZE_MATRICES_BY_NAN",
+            "-DEIGEN_NO_DEBUG=0"
+        ],
+        extra_link_args=[
+            "-fopenmp",
+            "-lntl",
+            "-DEIGEN_INITIALIZE_MATRICES_BY_NAN",
+            "-DEIGEN_NO_DEBUG=0"
+        ],
+        include_dirs=[
+            "sato_exp/reduction/include",
+            "sato_exp/core/include",
+            "sato_exp/svp/include"
+        ]
+    ),
+    Extension(
+        "sato_exp.svp._svp",
+        sources=[
+            "sato_exp/core/src/globals.cpp",
+            "sato_exp/core/src/compute_gso.cpp",
+            "sato_exp/svp/src/globals.cpp",
+            "sato_exp/svp/src/coeff_pruning.cpp",
+            "sato_exp/svp/src/enum_sv.cpp",
+        ],
+        language="c++",
+        extra_compile_args=[
+            "-O3",
+            "-fopenmp",
+            "-march=native",
+            "-funroll-loops",
+            "-DEIGEN_INITIALIZE_MATRICES_BY_NAN",
+            "-DEIGEN_NO_DEBUG=0"
+        ],
+        extra_link_args=[
+            "-fopenmp",
+            "-lntl",
+            "-DEIGEN_INITIALIZE_MATRICES_BY_NAN",
+            "-DEIGEN_NO_DEBUG=0"
+        ],
+        include_dirs=[
+            "sato_exp/svp/include",
+            "sato_exp/core/include"
+        ]
+    )
+]
+
+setup(
+    name="sato_exp",
+    version="0.1.0",
+    description="Lattice reduction algorithms with C++ backend",
+    packages=find_packages(),
+    ext_modules=ext_modules,
+    python_requires=">=3.8",
+    package_data={
+        "sato_exp": ["svp_challenge_list/*.txt"],
+    },
+    include_package_data=True
+)
